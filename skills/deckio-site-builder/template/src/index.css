@@ -1,0 +1,251 @@
+@import '@deckio/deck-engine/styles/global.css';
+@import '@deckio/deck-engine/themes/dark.css';
+
+/* ── Palette ──────────────────────────────────────────────────────────────
+   Change these first. Everything else (site, deck, backdrop, progress bar)
+   reads from them.
+   --brand    primary accent: links, highlights, glows
+   --brand-2  secondary / depth colour (gradients, orbs)
+   --brand-3  success / customer colour (passes, "done" states)
+   --danger   blocked / risk colour
+   --warn     attention colour (dates, TBC, cleanup)
+   ──────────────────────────────────────────────────────────────────────── */
+:root {
+  --night: #06101f;
+  --brand: #3cc8e8;
+  --brand-2: #2f6fa3;
+  --brand-2-light: #6aa6d6;
+  --brand-3: #30b457;
+  --danger: #ff5c5c;
+  --warn: #ffb547;
+  --ink: #eaf2fb;
+  --mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
+
+  /* DECKIO theme tokens, derived from the palette */
+  --background: var(--night);
+  --foreground: var(--ink);
+  --card: color-mix(in srgb, var(--brand-2) 12%, var(--night));
+  --secondary: color-mix(in srgb, var(--brand-2) 18%, var(--night));
+  --muted: color-mix(in srgb, var(--brand-2) 24%, var(--night));
+  --muted-foreground: color-mix(in srgb, var(--ink) 58%, var(--brand-2));
+  --border: color-mix(in srgb, var(--brand-2) 34%, var(--night));
+  --accent: var(--brand);
+  --primary: var(--brand);
+  --ring: color-mix(in srgb, var(--brand) 40%, transparent);
+  --purple: var(--brand-2-light);
+  --purple-deep: var(--brand-2);
+  --cyan: var(--brand);
+  --green: var(--brand-3);
+  --pink: var(--danger);
+  --glow-accent: color-mix(in srgb, var(--brand) 12%, transparent);
+  --glow-purple: color-mix(in srgb, var(--brand-2) 14%, transparent);
+  --glow-cyan: color-mix(in srgb, var(--brand) 10%, transparent);
+}
+
+body {
+  background:
+    radial-gradient(1100px 700px at 88% -10%, color-mix(in srgb, var(--brand-2) 38%, transparent), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, color-mix(in srgb, var(--brand-3) 13%, transparent), transparent 60%),
+    var(--night);
+}
+
+.accent-bar {
+  background: linear-gradient(to bottom, var(--brand), var(--brand-2) 60%, var(--brand-3));
+  opacity: 0.85;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--brand) 35%, transparent);
+}
+.deck-ty-watermark { display: none; }
+
+/* ── Animated backdrop (canvas) ───────────────────────────────────────── */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--brand) 35%, transparent);
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s, transform 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.motion-toggle:hover { border-color: var(--brand); transform: translateY(-1px); }
+.motion-toggle:active { transform: scale(0.96); }
+.motion-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.motion-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted-foreground);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.motion-dot.on { background: var(--brand-3); animation: live 1.8s ease-out infinite; }
+@keyframes live {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand-3) 70%, transparent); }
+  100% { box-shadow: 0 0 0 8px transparent; }
+}
+
+/* ── Icons, mascot, logos ─────────────────────────────────────────────── */
+.icon-img { display: block; width: 32px; height: 32px; flex-shrink: 0; object-fit: contain; }
+.icon-emoji { display: block; font-size: 28px; line-height: 1; }
+
+.mascot { position: relative; display: inline-block; line-height: 0; }
+.mascot-img { width: 100%; height: auto; display: block; }
+.floating-mascot {
+  position: fixed;
+  bottom: 84px;
+  right: 48px;
+  width: 100px;
+  opacity: 0.75;
+  z-index: 9000;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4));
+  animation: float-bob 5s ease-in-out infinite;
+}
+@keyframes float-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(2deg); }
+  50% { transform: translateY(-4px) rotate(0deg); }
+  75% { transform: translateY(-12px) rotate(-2deg); }
+}
+
+/* Logo row. Each logo's height is scaled by its `scale` in content.js. */
+.logos { display: flex; align-items: center; gap: 18px; }
+.logos img { display: block; width: auto; height: calc(var(--logo-h) * var(--s, 1)); }
+.logos-x { font-size: 18px; font-weight: 300; color: var(--muted-foreground); }
+.logos-divider { width: 1px; align-self: stretch; background: color-mix(in srgb, var(--foreground) 22%, transparent); }
+.logos-sm { gap: 12px; --logo-h: 22px; }
+.logos-md { --logo-h: 34px; }
+.logos-lg { --logo-h: 48px; }
+.brand-mark { display: block; height: auto; }
+
+/* ── Deck progress bar ────────────────────────────────────────────────────
+   One persistent element for the whole deck (see DeckView.jsx). It fills with
+   a width transition and never unmounts between slides, so it never flickers.
+   Swap the mask below to change its silhouette (blocks, battlements, bulbs…).
+   ──────────────────────────────────────────────────────────────────────── */
+.deck-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 16px;
+  pointer-events: none;
+}
+.deck-progress-track {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--brand-2) 22%, var(--night));
+  -webkit-mask:
+    linear-gradient(#000 0 0) bottom / 100% 55% no-repeat,
+    repeating-linear-gradient(90deg, #000 0 22px, transparent 22px 32px) top / 100% 100%;
+  mask:
+    linear-gradient(#000 0 0) bottom / 100% 55% no-repeat,
+    repeating-linear-gradient(90deg, #000 0 22px, transparent 22px 32px) top / 100% 100%;
+}
+.deck-progress-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg, var(--brand-2), var(--brand) 70%, var(--brand-3));
+  background-size: 100vw 100%;
+  box-shadow: 0 0 18px var(--brand);
+  transition: width 0.7s cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+.deck-progress-head {
+  position: absolute;
+  top: 3px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px 3px var(--brand), 0 0 22px 6px color-mix(in srgb, var(--brand) 50%, transparent);
+  transition: left 0.7s cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+.deck-progress.is-complete .deck-progress-head {
+  background: var(--brand-3);
+  box-shadow: 0 0 10px 3px var(--brand-3), 0 0 26px 8px color-mix(in srgb, var(--brand-3) 50%, transparent);
+}
+.deck-progress.is-complete .deck-progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent) no-repeat;
+  background-size: 30% 100%;
+  animation: progress-sweep 2.6s ease-in-out 0.6s infinite;
+}
+@keyframes progress-sweep { from { background-position: -40% 0; } to { background-position: 140% 0; } }
+html[data-export-mode="capture"] .deck-progress { display: none; }
+[class*="navWrapper"] > [class*="progressTrack"] { display: none; }
+
+/* ── Deck-only chrome ─────────────────────────────────────────────────── */
+button[title="Back to home"] { top: 36px !important; }
+[class*="exportGroup"] { top: 36px !important; }
+
+.deck-chrome {
+  position: fixed;
+  top: 36px;
+  left: 72px;
+  z-index: 9100;
+  display: flex;
+  gap: 10px;
+  opacity: 0.55;
+  transition: opacity 0.2s;
+}
+.deck-chrome:hover, .deck-chrome:focus-within { opacity: 1; }
+.deck-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 75%, transparent);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+}
+.deck-home-link:hover { border-color: var(--brand); }
+
+/* ── Deck on phones: portrait + short landscape ───────────────────────── */
+@media (max-width: 760px), (max-height: 500px) {
+  .deck { --content-gutter: 20px; }
+  .floating-mascot,
+  [class*="keyHint"],
+  [class*="exportGroup"],
+  button[title="Back to home"] { display: none !important; }
+  .deck-chrome { top: 28px; left: 12px; gap: 8px; opacity: 0.9; }
+  .deck-home-link { padding: 6px 12px; font-size: 12px; }
+  .deck-chrome .motion-toggle { padding: 6px 10px; }
+  .deck-chrome .motion-toggle-label { display: none; }
+  .deck-progress { height: 12px; }
+  .deck-progress-head { top: 2px; width: 8px; height: 8px; margin-left: -4px; }
+  [class*="_navBtn_"] {
+    top: auto !important;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    transform: none !important;
+    width: 44px; height: 44px;
+    opacity: 0.85;
+    background: color-mix(in srgb, var(--card) 82%, transparent);
+  }
+  [class*="_prev_"] { left: 14px !important; }
+  [class*="_next_"] { right: 14px !important; }
+  .slide > [class^="_bar_"], .slide-overflow-warn { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

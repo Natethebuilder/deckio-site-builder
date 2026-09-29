@@ -1,0 +1,9 @@
+{
+  "name": "deckio-site-builder-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Helper scripts for the deckio-site-builder skill",
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}

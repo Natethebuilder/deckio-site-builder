@@ -1,0 +1,6 @@
+node_modules/
+verify-out/
+dist/
+.vite/
+.DS_Store
+Thumbs.db
